@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config' 
-import { connectDB } from './lib/db.js'
+import { connectDB } from './database/db.js'
 import wordRoutes from "./routes/wordRoutes.js" 
 import authRoutes from "./routes/auth.js"
 

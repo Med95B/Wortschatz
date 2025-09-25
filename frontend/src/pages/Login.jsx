@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../api";
+import api from "../api/api";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });

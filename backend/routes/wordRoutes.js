@@ -1,6 +1,6 @@
 import express from 'express'
 import Word from '../models/Word.js'
-import authMiddleware from "../middleware/authMiddleware.js"
+import authMiddleware from "../middlewares/authMiddleware.js"
 
 const router = express.Router()
 
