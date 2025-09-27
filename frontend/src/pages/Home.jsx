@@ -13,13 +13,16 @@ const Home = () => {
     setLoading(true);
     setError("");
     try {
+      
       const res = await api.get("/words/random");
+      
       setWord(res.data || null);
+
     } catch (err) {
       console.error("fetchRandomWord error:", err.response ?? err.message);
 
       if (err.response?.status === 401) {
-        localStorage.removeItem("token");
+        //localStorage.removeItem("token");
         navigate("/login", { replace: true });
         return;
       }

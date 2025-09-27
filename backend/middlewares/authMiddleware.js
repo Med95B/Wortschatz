@@ -2,9 +2,12 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 
-const authMiddleware = async (req, res, next) => {
+export const protect = async (req, res, next) => {
+ 
   try {
+    
     const token = req.header("Authorization")?.replace("Bearer ", "");
+   
     if (!token) {
       return res.status(401).json({ message: "Accès refusé. Pas de token." });
     }
@@ -12,11 +15,12 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
    
-    const user = await User.findById(decoded.id).select('-password')
+    const user = await User.findById(decoded.user._id).select('-password')
     if (!user) {
       return res.status(401).json({ message: "Utilisateur non trouvé." });
     }
-
+    
+    
     req.user = user; 
     next();
 
@@ -25,4 +29,3 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-export default authMiddleware

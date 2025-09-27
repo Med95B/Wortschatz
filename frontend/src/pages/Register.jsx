@@ -1,22 +1,30 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import {  Link } from "react-router-dom";
 import api from "../api/api";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
-  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
     try {
-      await api.post("/auth/register", form);
-      alert("Inscription réussie !");
-      navigate("/login");
+      const res = await api.post("/auth/register", form);
+      setMessage(res.data.message || "Inscription réussie ! Vérifiez votre email pour activer votre compte.");
+      setLoading(false);
+
+     
+      setForm({ username: "", email: "", password: "" });
     } catch (err) {
-      alert(err.response?.data?.error || "Erreur inscription");
+      setMessage(err.response?.data?.message || "Erreur inscription");
+      setLoading(false);
     }
   };
 
@@ -47,8 +55,16 @@ const Register = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit">S’inscrire</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Inscription en cours..." : "S’inscrire"}
+        </button>
       </form>
+
+      {message && (
+        <p style={{ marginTop: "20px", color: message.includes("Erreur") ? "red" : "green" }}>
+          {message}
+        </p>
+      )}
 
       <p>
         Déjà inscrit ?{" "}
@@ -61,4 +77,5 @@ const Register = () => {
 };
 
 export default Register;
+
 

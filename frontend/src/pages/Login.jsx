@@ -4,6 +4,8 @@ import api from "../api/api";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = e =>
@@ -11,13 +13,25 @@ const Login = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
     try {
       const res = await api.post("/auth/login", form);
+
+      
+      // Stockage du token JWT
       localStorage.setItem("token", res.data.token);
-      alert("Connexion réussie !");
+
+      setMessage("Connexion réussie !");
+      setLoading(false);
+
+      // Redirection vers Home
       navigate("/");
+
     } catch (err) {
-      alert(err.response?.data?.error || "Erreur login");
+      setMessage(err.response?.data?.message || "Erreur login");
+      setLoading(false);
     }
   };
 
@@ -41,8 +55,16 @@ const Login = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit">Se connecter</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Connexion en cours..." : "Se connecter"}
+        </button>
       </form>
+
+      {message && (
+        <p style={{ marginTop: "20px", color: message.includes("Erreur") ? "red" : "green" }}>
+          {message}
+        </p>
+      )}
 
       <p>
         Pas encore inscrit ?{" "}
