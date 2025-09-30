@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../api/api";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../store/authSlice";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,17 +19,15 @@ const Login = () => {
     setMessage("");
 
     try {
-      const res = await api.post("/auth/login", form);
-
-      
-      // Stockage du token JWT
-      localStorage.setItem("token", res.data.token);
+      const res = await dispatch(loginUser(form)).unwrap();
 
       setMessage("Connexion réussie !");
       setLoading(false);
 
-      // Redirection vers Home
-      navigate("/");
+      
+      if (res.payload?.token) {
+        navigate("/", { replace: true });
+    }
 
     } catch (err) {
       setMessage(err.response?.data?.message || "Erreur login");

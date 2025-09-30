@@ -20,7 +20,7 @@ export const register = async (req, res) => {
 
     // Generer token deactivation
     const activationToken = generateToken(newUser, "5m");
-    const activationUrl = `${process.env.FRONT_URI}/activation/${activationToken}`;
+    const activationUrl = `${process.env.FRONT_URI}activation/${activationToken}`;
 
     // Envoi mail
     await activationMail({
